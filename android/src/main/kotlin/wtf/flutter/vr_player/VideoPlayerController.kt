@@ -176,7 +176,7 @@ class VideoPlayerController(
                 result.success("${positionG}")
             }
             "getDuration" -> {
-                var positionG =  player?.getCurrentDuration()
+                var positionG =  player?.getDuration()
                 result.success("${positionG}")
             }
             else -> result.notImplemented()
