@@ -65,7 +65,8 @@ class VideoPlayerPage extends StatefulWidget {
   State<VideoPlayerPage> createState() => _VideoPlayerPageState();
 }
 
-class _VideoPlayerPageState extends State<VideoPlayerPage> with TickerProviderStateMixin {
+class _VideoPlayerPageState extends State<VideoPlayerPage>
+    with TickerProviderStateMixin {
   late VrPlayerController _viewPlayerController;
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -87,7 +88,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with TickerProviderSt
 
   @override
   void initState() {
-    _animationController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _animation = Tween<double>(begin: 0, end: 1).animate(_animationController);
     _toggleShowingBar();
     super.initState();
@@ -113,9 +115,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with TickerProviderSt
     }
   }
 
+  String position = '';
+
   @override
   Widget build(BuildContext context) {
-    _isLandscapeOrientation = MediaQuery.of(context).orientation == Orientation.landscape;
+    _isLandscapeOrientation =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
       appBar: AppBar(
@@ -144,6 +149,19 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with TickerProviderSt
                   color: Colors.black,
                   child: Row(
                     children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.play_arrow,
+                          color: Colors.white,
+                        ),
+                        onPressed: () async {
+                          final pos = await _viewPlayerController.getPosition();
+                          setState(() {
+                            position = pos ?? '';
+                          });
+                        },
+                      ),
+                      Text(position, style:TextStyle(color:Colors.white)),
                       IconButton(
                         key: const Key("play_pause_button"),
                         icon: Icon(
@@ -188,7 +206,6 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with TickerProviderSt
                         ),
                       ),
                       Text(
-                        
                         _duration?.toString() ?? '99:99',
                         key: const Key("duration_text"),
                         style: const TextStyle(color: Colors.white),
@@ -196,14 +213,19 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with TickerProviderSt
                       if (_isFullScreen || _isLandscapeOrientation)
                         IconButton(
                           icon: Icon(
-                            _isVolumeEnabled ? Icons.volume_up_rounded : Icons.volume_off_rounded,
+                            _isVolumeEnabled
+                                ? Icons.volume_up_rounded
+                                : Icons.volume_off_rounded,
                             color: Colors.white,
                           ),
-                          onPressed: () => switchVolumeSliderDisplay(show: true),
+                          onPressed: () =>
+                              switchVolumeSliderDisplay(show: true),
                         ),
                       IconButton(
                         icon: Icon(
-                          _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+                          _isFullScreen
+                              ? Icons.fullscreen_exit
+                              : Icons.fullscreen,
                           color: Colors.white,
                         ),
                         onPressed: fullScreenPressed,
@@ -286,9 +308,9 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with TickerProviderSt
     }
 
     if (_isPlaying) {
-      await _viewPlayerController.pause();
+      _viewPlayerController.pause();
     } else {
-      await _viewPlayerController.play();
+      _viewPlayerController.play();
     }
 
     setState(() {
@@ -310,7 +332,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with TickerProviderSt
     if (!_isVideoLoaded) {
       Future.delayed(Duration.zero, () async {
         await _viewPlayerController.loadVideo(
-          videoUrl: 'https://cdn.deinerstertag.de/video/OKO_TECH-Industriemechaniker_in-KE-GR-V01/HLS/master.m3u8',
+          videoUrl:
+              'https://video3.mobion.vn/uploads/2025/03/24/1742800283805/4bdedbb2e943.mp4',
         );
         if (!mounted) return;
         setState(() {
@@ -376,7 +399,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with TickerProviderSt
     });
   }
 
-  String millisecondsToDateTime(int milliseconds) => setDurationText(Duration(milliseconds: milliseconds));
+  String millisecondsToDateTime(int milliseconds) =>
+      setDurationText(Duration(milliseconds: milliseconds));
 
   String setDurationText(Duration duration) {
     String twoDigits(int n) {

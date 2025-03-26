@@ -31,6 +31,14 @@ class VrPlayerController {
     return await _channel.invokeMethod('isPlaying');
   }
 
+  Future<String?> getPosition() async {
+    return await _channel.invokeMethod('getPosition');
+  }
+
+  Future<String?> getDuration() async {
+    return await _channel.invokeMethod('getDuration');
+  }
+
   /// Play video
   Future<void> play() {
     return _channel.invokeMethod('play');

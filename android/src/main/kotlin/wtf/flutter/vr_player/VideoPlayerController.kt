@@ -16,6 +16,8 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import android.os.SystemClock
+import android.view.MotionEvent
 
 class VideoPlayerController(
     private val context: Context,
@@ -45,22 +47,22 @@ class VideoPlayerController(
         MethodChannel(binaryMessenger, "vr_player_$viewId").apply {
             setMethodCallHandler(this@VideoPlayerController)
         }
-        createEventChannel(
-            "vr_player_events_${viewId}_state",
-            { e -> playerEventStateChanged = e },
-            { playerEventStateChanged = null })
-        createEventChannel(
-            "vr_player_events_${viewId}_duration",
-            { e -> playerEventDurationChanged = e },
-            { playerEventDurationChanged = null })
-        createEventChannel(
-            "vr_player_events_${viewId}_position",
-            { e -> playerEventPosition = e },
-            { playerEventPosition = null })
-        createEventChannel(
-            "vr_player_events_${viewId}_ended",
-            { e -> playerEventEnded = e },
-            { playerEventEnded = null })
+//        createEventChannel(
+//            "vr_player_events_${viewId}_state",
+//            { e -> playerEventStateChanged = e },
+//            { playerEventStateChanged = null })
+//        createEventChannel(
+//            "vr_player_events_${viewId}_duration",
+//            { e -> playerEventDurationChanged = e },
+//            { playerEventDurationChanged = null })
+//        createEventChannel(
+//            "vr_player_events_${viewId}_position",
+//            { e -> playerEventPosition = e },
+//            { playerEventPosition = null })
+//        createEventChannel(
+//            "vr_player_events_${viewId}_ended",
+//            { e -> playerEventEnded = e },
+//            { playerEventEnded = null })
     }
 
     private fun createEventChannel(
@@ -131,7 +133,15 @@ class VideoPlayerController(
                 result.success(true)
             }
             "toggleVRMode" -> {
-                toggleVRMode()
+                playerViewSave?.let{ view ->
+                    val currentTime = SystemClock.uptimeMillis()
+                    val downEvent = MotionEvent.obtain(currentTime, currentTime, MotionEvent.ACTION_DOWN, 800f, 500f, 0)
+                    view.dispatchTouchEvent(downEvent)
+
+                    val upEvent = MotionEvent.obtain(currentTime, currentTime, MotionEvent.ACTION_UP, 800f, 500f, 0)
+                    view.dispatchTouchEvent(upEvent)
+
+                }
             }
             "fullScreen" -> {
                 if (mediaEntry?.isVRMediaType == true) {
@@ -160,6 +170,14 @@ class VideoPlayerController(
                     dispose(true)
                 }
                 result.success(true)
+            }
+            "getPosition" -> {
+              var positionG =  player?.getCurrentPosition()
+                result.success("${positionG}")
+            }
+            "getDuration" -> {
+                var positionG =  player?.getCurrentDuration()
+                result.success("${positionG}")
             }
             else -> result.notImplemented()
         }
@@ -259,6 +277,7 @@ class VideoPlayerController(
     fun loadPlayer() {
         loadPlayerInner()
     }
+    private var playerViewSave: View? = null;
 
     private fun loadPlayerInner() {
         if (player != null) return
@@ -273,6 +292,7 @@ class VideoPlayerController(
                 FrameLayout.LayoutParams.WRAP_CONTENT
             )
             listener.onViewCreated(playerView)
+            playerViewSave = playerView // thay YourClassName bằng tên lớp của bạn
 
             addListener(this)
         }

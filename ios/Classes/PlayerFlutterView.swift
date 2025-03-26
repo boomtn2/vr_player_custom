@@ -53,30 +53,30 @@ final class PlayerFlutterView: NSObject, FlutterPlatformView {
         )
         
         flutterChannels = [
-            KalturaStateEventChannel(
-                name: String(format: "vr_player_events_%lld_state", viewId),
-                binaryMessenger: messenger,
-                player: player,
-                playerEvents: [PlayerEvent.stateChanged]
-            ),
-            KalturaDurationEventChannel(
-                name: String(format: "vr_player_events_%lld_duration", viewId),
-                binaryMessenger: messenger,
-                player: player,
-                playerEvents: [PlayerEvent.durationChanged]
-            ),
-            KalturaPositionEventChannel(
-                name: String(format: "vr_player_events_%lld_position", viewId),
-                binaryMessenger: messenger,
-                player: player,
-                playerEvents: PlayerEvent.allEventTypes
-            ),
-            KalturaEndedEventChannel(
-                name: String(format: "vr_player_events_%lld_ended", viewId),
-                binaryMessenger: messenger,
-                player: player,
-                playerEvents: [PlayerEvent.ended]
-            )
+//            KalturaStateEventChannel(
+//                name: String(format: "vr_player_events_%lld_state", viewId),
+//                binaryMessenger: messenger,
+//                player: player,
+//                playerEvents: [PlayerEvent.stateChanged]
+//            ),
+//            KalturaDurationEventChannel(
+//                name: String(format: "vr_player_events_%lld_duration", viewId),
+//                binaryMessenger: messenger,
+//                player: player,
+//                playerEvents: [PlayerEvent.durationChanged]
+//            ),
+//            KalturaPositionEventChannel(
+//                name: String(format: "vr_player_events_%lld_position", viewId),
+//                binaryMessenger: messenger,
+//                player: player,
+//                playerEvents: PlayerEvent.allEventTypes
+//            ),
+//            KalturaEndedEventChannel(
+//                name: String(format: "vr_player_events_%lld_ended", viewId),
+//                binaryMessenger: messenger,
+//                player: player,
+//                playerEvents: [PlayerEvent.ended]
+//            )
         ]
         
         let viewFrame = CGRect(
@@ -125,6 +125,12 @@ final class PlayerFlutterView: NSObject, FlutterPlatformView {
             onResume(arguments: call.arguments, result: result)
         case "dispose":
             dispose(result: result)
+       case "getPosition":
+           let position = String(player.currentTime)
+           result(position)
+       case "getDuration":
+           let duration = String(player.duration)
+           result(duration)
         default:
             methodCall(arguments: call.arguments, result: result)
         }
