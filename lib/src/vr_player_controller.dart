@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -31,12 +32,31 @@ class VrPlayerController {
     return await _channel.invokeMethod('isPlaying');
   }
 
-  Future<String?> getPosition() async {
-    return await _channel.invokeMethod('getPosition');
+  Future<Duration?> getPosition() async {
+    String? _stPosition = await _channel.invokeMethod('getPosition');
+
+    return stToDuration(_stPosition);
   }
 
-  Future<String?> getDuration() async {
-    return await _channel.invokeMethod('getDuration');
+  Duration? stToDuration(String? time) {
+    if (time == null) return null;
+    Duration? duration;
+
+    int? intTime = int.tryParse(time);
+
+    if (Platform.isAndroid) {
+      duration = intTime != null ? Duration(milliseconds: intTime) : null;
+    } else {
+      duration = intTime != null ? Duration(seconds: intTime) : null;
+    }
+
+    return duration;
+  }
+
+  Future<Duration?> getDuration() async {
+    String? st = await _channel.invokeMethod('getDuration');
+
+    return stToDuration(st);
   }
 
   /// Play video
