@@ -29,7 +29,12 @@ class VrPlayerController {
 
   /// Check current player state
   Future<bool> isPlaying() async {
-    return await _channel.invokeMethod('isPlaying');
+    final isPlay = await _channel.invokeMethod('isPlaying');
+    if(isPlay is bool)
+      {
+        return isPlay;
+      }
+    return false;
   }
 
   Future<Duration?> getPosition() async {
@@ -42,12 +47,15 @@ class VrPlayerController {
     if (time == null) return null;
     Duration? duration;
 
-    int? intTime = int.tryParse(time);
 
     if (Platform.isAndroid) {
+      int? intTime = int.tryParse(time);
+
       duration = intTime != null ? Duration(milliseconds: intTime) : null;
     } else {
-      duration = intTime != null ? Duration(seconds: intTime) : null;
+      double? intTime = double.tryParse(time);
+
+      duration = intTime != null ? Duration(seconds: intTime.toInt()) : null;
     }
 
     return duration;

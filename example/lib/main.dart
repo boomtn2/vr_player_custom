@@ -156,12 +156,15 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
                         ),
                         onPressed: () async {
                           final pos = await _viewPlayerController.getPosition();
-                          setState(() {
-                            position = pos ?? '';
-                          });
+                          print(pos);
+                          final duration =
+                              await _viewPlayerController.getDuration();
+                        final isPlay = await  _viewPlayerController.isPlaying();
+                          print(duration);
+                          print(isPlay);
                         },
                       ),
-                      Text(position, style:TextStyle(color:Colors.white)),
+                      Text(position, style: TextStyle(color: Colors.white)),
                       IconButton(
                         key: const Key("play_pause_button"),
                         icon: Icon(

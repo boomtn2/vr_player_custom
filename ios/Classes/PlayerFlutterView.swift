@@ -192,7 +192,7 @@ final class PlayerFlutterView: NSObject, FlutterPlatformView {
     }
     
     private func isPlaying(arguments: Any?, result: FlutterResult) {
-        result(nil)
+        result(player.isPlaying)
     }
     
     private func play(arguments: Any?, result: FlutterResult) {
